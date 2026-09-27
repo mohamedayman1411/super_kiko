@@ -1,0 +1,136 @@
+[gd_scene format=3 uid="uid://dwk4whaf0b5jg"]
+
+[ext_resource type="Texture2D" uid="uid://d2twas6sbh6jg" path="res://assets/sprites/player.png" id="1_rwm0n"]
+[ext_resource type="Script" uid="uid://fapof6kl85wo" path="res://assets/scripts/player_controller.gd" id="1_s027a"]
+[ext_resource type="Script" uid="uid://ba7vwyi4buwqf" path="res://assets/scripts/player_animator.gd" id="2_14505"]
+
+[sub_resource type="Animation" id="Animation_s027a"]
+length = 0.001
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../PlayerAnimator/Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(0, 0, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_8sknh"]
+resource_name = "fall"
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../PlayerAnimator/Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(0, 48, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_14505"]
+resource_name = "idle"
+length = 2.0
+loop_mode = 1
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../PlayerAnimator/Sprite2D:region_rect")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75, 1, 1.25, 1.5, 2),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1, 1, 1, 1),
+"update": 0,
+"values": [Rect2(0, 0, 16, 16), Rect2(16, 0, 16, 16), Rect2(32, 0, 16, 16), Rect2(48, 0, 16, 16), Rect2(64, 0, 16, 16), Rect2(80, 0, 16, 16), Rect2(96, 0, 16, 16), Rect2(96, 0, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_0gfpk"]
+resource_name = "jump"
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../PlayerAnimator/Sprite2D:region_rect")
+tracks/0/interp = 1
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0),
+"transitions": PackedFloat32Array(1),
+"update": 0,
+"values": [Rect2(0, 32, 16, 16)]
+}
+
+[sub_resource type="Animation" id="Animation_4wcc8"]
+resource_name = "move"
+loop_mode = 1
+step = 0.25
+tracks/0/type = "value"
+tracks/0/imported = false
+tracks/0/enabled = true
+tracks/0/path = NodePath("../PlayerAnimator/Sprite2D:region_rect")
+tracks/0/interp = 0
+tracks/0/loop_wrap = true
+tracks/0/keys = {
+"times": PackedFloat32Array(0, 0.25, 0.5, 0.75, 1),
+"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
+"update": 0,
+"values": [Rect2(0, 16, 16, 16), Rect2(16, 16, 16, 16), Rect2(32, 16, 16, 16), Rect2(48, 16, 16, 16), Rect2(46, 16, 16, 16)]
+}
+
+[sub_resource type="AnimationLibrary" id="AnimationLibrary_4wcc8"]
+_data = {
+&"RESET": SubResource("Animation_s027a"),
+&"fall": SubResource("Animation_8sknh"),
+&"idle": SubResource("Animation_14505"),
+&"jump": SubResource("Animation_0gfpk"),
+&"move": SubResource("Animation_4wcc8")
+}
+
+[sub_resource type="CapsuleShape2D" id="CapsuleShape2D_p3bpn"]
+radius = 4.0
+height = 14.0
+
+[node name="player" type="CharacterBody2D" unique_id=610216783]
+position = Vector2(2, -7)
+collision_mask = 768
+script = ExtResource("1_s027a")
+speed = 5.0
+jump_power = 8.0
+
+[node name="Camera2D" type="Camera2D" parent="." unique_id=150436059]
+offset = Vector2(0, -15)
+zoom = Vector2(6, 6)
+position_smoothing_enabled = true
+position_smoothing_speed = 4.0
+
+[node name="PlayerAnimator" type="Node2D" parent="." unique_id=953651382 node_paths=PackedStringArray("player_controller", "player_animator", "sprite")]
+script = ExtResource("2_14505")
+player_controller = NodePath("..")
+player_animator = NodePath("AnimationPlayer")
+sprite = NodePath("Sprite2D")
+
+[node name="AnimationPlayer" type="AnimationPlayer" parent="PlayerAnimator" unique_id=1128905922]
+root_node = NodePath("../../Camera2D")
+libraries/ = SubResource("AnimationLibrary_4wcc8")
+autoplay = &"idle"
+speed_scale = 1.5
+
+[node name="Sprite2D" type="Sprite2D" parent="PlayerAnimator" unique_id=307771309]
+position = Vector2(-1.5, -1.5)
+scale = Vector2(1.0267857, 1.046875)
+texture = ExtResource("1_rwm0n")
+region_enabled = true
+region_rect = Rect2(0, 0, 16, 16)
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1098691767]
+position = Vector2(-2, -1)
+shape = SubResource("CapsuleShape2D_p3bpn")
